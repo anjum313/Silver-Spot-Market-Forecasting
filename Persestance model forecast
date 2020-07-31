@@ -1,0 +1,48 @@
+# Importing the libraries
+
+from pandas import read_csv
+from pandas import datetime
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+from matplotlib import pyplot
+import numpy as np
+import pandas as pd
+
+series_1 = read_csv('LBMA-SILVER.csv', usecols=[2])
+train = series_1.values
+series_2 = read_csv('Silver_train.csv', usecols=[2])
+test = series_2.values
+
+
+# walk-forward validation
+
+import pandas as pd
+Training_window = 1
+sliced = len(train)-Training_window
+history = []
+for x in range(sliced,len(train)):
+    history.append(train[x])
+    
+    
+Horizion =240   
+predictions = list()
+for i in range(0,Horizion):
+	# make prediction
+	predictions.append(history[-1])
+	# observation
+	history.append(test[i])
+# report performance
+predictions = np.array(predictions)    
+rmse = sqrt(mean_squared_error(test[0:Horizion], predictions))
+print('RMSE: %.3f' % rmse)
+# line plot of observed vs predicted
+pyplot.plot(test[0:Horizion],color = 'blue',label ='Real  Price')
+pyplot.plot(predictions,color = 'Red',label = 'forecast  Price')
+pyplot.grid()
+pyplot.title('persistant forecast 1 weeks forecast')
+pyplot.xlabel('Time')
+pyplot.ylabel(' Stock Price')
+pyplot.legend()
+pyplot.axis('tight')
+pyplot.autoscale(enable=True, axis='x', tight=True)
+pyplot.show()
